@@ -33,7 +33,9 @@ SECRET_KEY = use_keys['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 if ON_OPENSHIFT:
-    DEBUG = False
+    #developer mode
+    DEBUG = True
+    #DEBUG = False
 else:
     DEBUG = True
 
@@ -74,20 +76,51 @@ TEMPLATE_DIRS = (
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-if ON_OPENSHIFT:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'db.sqlite3'),
-        }
-    }
+if 'DJANGO_DB_ENGINE' in os.environ:
+    print("DJANGO_DB_ENGINE detected")
+    DB_ENGINE = os.environ['DJANGO_DB_ENGINE']
 else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
+    print("DJANGO_DB_ENGINE NOT detected")
+    DB_ENGINE = 'sqlite'
+
+if DB_ENGINE == 'sqlite':
+    print("Using sqlite3 as DB engine.")
+    DB_ENGINE = 'django.db.backends.sqlite3'
+    DB_USER = ''
+    DB_PASSWORD = ''
+    DB_HOST = ''
+    DB_PORT = ''
+    if ON_OPENSHIFT:
+        DB_NAME = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'db.sqlite3')
+    else:
+        DB_NAME = os.path.join(BASE_DIR, 'db.sqlite3')
+elif DB_ENGINE == 'postgresql':
+    print("Using postgresql as DB engine.")
+    DB_ENGINE = 'django.db.backends.postgresql_psycopg2'
+    if ON_OPENSHIFT:
+        DB_NAME = os.environ['OPENSHIFT_APP_NAME']
+        DB_USER = os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME']
+        DB_PASSWORD = os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD']
+        DB_HOST = os.environ['OPENSHIFT_POSTGRESQL_DB_HOST']
+        DB_PORT = os.environ['OPENSHIFT_POSTGRESQL_DB_PORT']
+    else:
+        DB_NAME = 'development'
+        DB_USER = 'postgres'
+        DB_PASSWORD = 'postgres'
+        DB_HOST = ''
+        DB_PORT = ''
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': DB_ENGINE,
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWORD,
+        'HOST': DB_HOST,
+        'PORT': DB_PORT,
     }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/

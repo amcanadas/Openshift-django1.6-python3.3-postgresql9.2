@@ -12,6 +12,6 @@ setup(name='YourAppName', version='1.0',
 			'static3',  # If you want serve the static files in the same server
                         #  'mysql-connector-python',
                         #  'pymongo',
-                        #  'psycopg2',
+                  'psycopg2',
       ],
      )
