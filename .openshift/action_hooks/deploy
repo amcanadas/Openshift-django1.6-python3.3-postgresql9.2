@@ -5,7 +5,6 @@
 # ruby, etc.
 
 source $OPENSHIFT_HOMEDIR/python/virtenv/venv/bin/activate
-export DJANGO_SETTINGS_MODULE=settings
 
 if [ "$DJANGO_DB_ENGINE" == "postgresql" ]
 then

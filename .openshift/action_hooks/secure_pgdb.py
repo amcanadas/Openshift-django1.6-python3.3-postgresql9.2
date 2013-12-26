@@ -7,6 +7,9 @@ import hashlib, imp, os, sys
 #openshiftlibs = imp.load_module('openshiftlibs', modinfo[0], modinfo[1], modinfo[2])
 
 # Get database Users
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+sys.path.append(os.path.join(os.environ['OPENSHIFT_REPO_DIR'], 'wsgi', os.environ['DJANGO_PROJECT_NAME']))
+
 from django.contrib.auth.models import User
 
 usr = User.objects.get(username__exact='admin')
@@ -21,8 +24,6 @@ usr = User.objects.get(username__exact='admin')
 new_pass = 'Hola'
 
 # Update the user admin password
-#os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
-#sys.path.append(os.path.join(os.environ['OPENSHIFT_REPO_DIR'], 'wsgi', 'blas'))
 usr.set_password(new_pass)
 usr.save()
 
