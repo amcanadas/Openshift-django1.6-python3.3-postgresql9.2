@@ -9,7 +9,7 @@ import hashlib, imp, os, sys
 # Get database Users
 from django.contrib.auth.models import User
 
-usr = User.objects.get(username__exact=os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME'])
+usr = User.objects.get(username__exact='admin')
 
 # Randomly generate a new password and a new salt
 # The PASSWORD value below just sets the length (8)
@@ -27,4 +27,4 @@ usr.set_password(new_pass)
 usr.save()
 
 # Print the new password info
-print("Django application credentials:\n\tuser: " + os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME'] + "\n\t" + new_pass)
+print("Django application credentials:\n\tuser: admin\n\tpwd: " + new_pass)
