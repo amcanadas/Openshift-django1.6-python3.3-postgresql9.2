@@ -1,5 +1,23 @@
 #!/usr/bin/env python
 import hashlib, imp, os, sys
+import random
+
+# This function creates per-deployment random keys;
+def make_secure_key(key_length):
+    # These are the legal password characters
+    # as per the Django source code
+    # (django/contrib/auth/models.py)
+    chars  = 'abcdefghjkmnpqrstuvwxyz'
+    chars += 'ABCDEFGHJKLMNPQRSTUVWXYZ'
+    chars += '23456789'
+
+    # Create a random string the same length as the default
+    rand_key = ''
+    for _ in range(key_length):
+        rand_key += random.choose(chars)
+
+    # Set the value
+    return rand_key
 
 # Load the openshift helper library
 #lib_path      = os.environ['OPENSHIFT_REPO_DIR'] + 'wsgi/blas/'
@@ -25,7 +43,7 @@ except Exception:
 #use_keys = openshiftlibs.openshift_secure(old_keys)
 
 # Encrypt the new password
-new_pass = 'Hola'
+new_pass = make_secure_key(12)
 
 # Update the user admin password
 usr.set_password(new_pass)
