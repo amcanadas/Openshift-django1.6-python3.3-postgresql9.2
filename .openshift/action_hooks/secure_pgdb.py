@@ -12,8 +12,14 @@ sys.path.append(os.path.join(os.environ['OPENSHIFT_REPO_DIR'], 'wsgi', os.enviro
 
 from django.contrib.auth.models import User
 
-usr = User.objects.get(username__exact='admin')
-
+try:
+    usr = User.objects.get(username__exact='admin')
+except Exception, e:
+    usr = User.objects.create_user('admin', 'admin@test.com', 'pass')
+    usr.save()
+    usr.is_staff = True
+    usr.save()
+    
 # Randomly generate a new password and a new salt
 # The PASSWORD value below just sets the length (8)
 # for the real new password.
