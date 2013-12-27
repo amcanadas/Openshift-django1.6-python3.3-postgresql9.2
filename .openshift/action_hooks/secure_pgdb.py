@@ -14,7 +14,7 @@ def make_secure_key(key_length):
     # Create a random string the same length as the default
     rand_key = ''
     for _ in range(key_length):
-        rand_key += random.choose(chars)
+        rand_key += random.choice(chars)
 
     # Set the value
     return rand_key
