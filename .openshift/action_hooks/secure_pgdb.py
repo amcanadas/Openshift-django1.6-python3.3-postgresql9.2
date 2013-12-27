@@ -33,7 +33,7 @@ from django.contrib.auth.models import User
 try:
     usr = User.objects.get(username__exact='admin')
 except Exception:
-    usr = User.objects.create_adminuser('admin', 'admin@test.com', 'pass')
+    usr = User.objects.create_superuser('admin', 'admin@test.com', 'pass')
     usr.save()
     
 # Randomly generate a new password and a new salt
