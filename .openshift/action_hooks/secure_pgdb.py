@@ -14,7 +14,7 @@ from django.contrib.auth.models import User
 
 try:
     usr = User.objects.get(username__exact='admin')
-except Exception, e:
+except Exception:
     usr = User.objects.create_user('admin', 'admin@test.com', 'pass')
     usr.save()
     usr.is_staff = True
