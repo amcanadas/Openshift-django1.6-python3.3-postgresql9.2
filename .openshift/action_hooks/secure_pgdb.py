@@ -8,7 +8,6 @@ import hashlib, imp, os, sys
 
 # Get database Users
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
-os.environ['LD_LIBRARY_PATH'] = os.environ['LD_LIBRARY_PATH'] + ':/opt/rh/postgresql92/root/usr/lib64/'
 sys.path.append(os.path.join(os.environ['OPENSHIFT_REPO_DIR'], 'wsgi', os.environ['DJANGO_PROJECT_NAME']))
 
 from django.contrib.auth.models import User
