@@ -3,15 +3,19 @@ Django 1.6 and Python 3 on OpenShift
 
 This git repository helps you get up and running quickly w/ a Django 1.6 and
 Python 3.3 installation on OpenShift.  The Django project name used in this
-repo is 'openshift' but you can feel free to change it.  Right now the
-backend is sqlite3 and the database runtime is found in
-`$OPENSHIFT_DATA_DIR/sqlite3.db`.
+repo is 'blas' but you can feel free to change it.  Two backends are supported; SQLite3
+and PostgreSQL 9.
+SQLite3 database runtime is found in `$OPENSHIFT_DATA_DIR/sqlite3.db`.
+
+
+If using SQLite3
+----------------
 
 Before you push this app for the first time, you will need to change
 the [Django admin password](#admin-user-name-and-password).
 Then, when you first push this
-application to the cloud instance, the sqlite database is copied from
-`wsgi/openshift/sqlite3.db` to $OPENSHIFT_DATA_DIR/ with your newly 
+application to the cloud instance, the SQLite database is copied from
+`wsgi/blas/sqlite3.db` to $OPENSHIFT_DATA_DIR/ with your newly 
 changed login credentials. Other than the password change, this is the 
 stock database that is created when `python manage.py syncdb` is run with
 only the admin app installed.
@@ -22,6 +26,16 @@ anything that requires an alter table, you could add the alter
 statements in `GIT_ROOT/.openshift/action_hooks/alter.sql` and then use
 `GIT_ROOT/.openshift/action_hooks/deploy` to execute that script (make
 sure to back up your database w/ `rhc app snapshot save` first :) )
+
+If PostgreSQL is used
+---------------------
+
+On every push a 'python manage.py syncdb' is executed to make sure that any
+models you add is created in the DB. In preloaded data is needed, use of 
+fixtures is recomended (not in applied in this project).
+If admin database is created for the first time, an admin user is created,
+otherwhise, admin passord is automatically changed for security reasons.
+
 
 With this you can install Django 1.6 with Python 3.3 on OpenShift.
 
@@ -38,18 +52,23 @@ Create a python-3.3 application
 
     rhc app create -a djangopy3 -t python-3.3
 
-Or create the application python-3.3 with the admin web console.
+If PostgreSQL is used, add Python 9.2 Cartridge
 
-    https://www.openshift.com/
+    rhc cartridge-add -a djangopy3 -c postgresql-9.2
 
-Connect into your OpenShift account and Add Application and select Python 3.3.
+Set some environment variables for the OpenShift application
 
-Create the Python application with the name django3.
+    rhc env set DJANGO_PROJECT_NAME='blas' --app djangopy3
+    rhc env set DJANGO_DB_ENGINE='postgresql' --app djangopy3
+
+where DJANGO_PROJECT_NAME is the name of your django project in the wsgi directory and DJANGO_DB_ENGINE
+has de values 'postgresql' or 'sqlite3' depending on your backend. In working on local developement, this
+ variables are needed too.
 
 Add this upstream repo
 
     cd djangopy3
-    git remote add upstream -m master git://github.com/rancavil/django-py3-openshift-quickstart.git
+    git remote add upstream -m master git://github.com/amcanadas/django-py3-openshift-quickstart.git
     git pull -s recursive -X theirs upstream master
 
 Then push the repo upstream
@@ -81,7 +100,7 @@ In the console output, you must find something like this:
 
      remote: Django application credentials:
      remote: 	user: admin
-     remote: 	SY1ScjQGb2qb
+     remote: 	pwd: SY1ScjQGb2qb
 
 Or you can go to SSH console, and check the CREDENTIALS file located 
 in $OPENSHIFT_DATA_DIR.
@@ -93,7 +112,7 @@ You should see the output:
 
      Django application credentials:
      		 user: admin
-     		 SY1ScjQGb2qb
+     		 pwd: SY1ScjQGb2qb
 
 After, you can change the password in the Django admin console.
 
@@ -110,6 +129,7 @@ Django project directory structure
      			pre_build
      			deploy
      			secure_db.py
+                secure_pgdb.py
      		cron/
      		markers/
      	setup.py   (Setup file with de dependencies and required libs)
@@ -119,7 +139,7 @@ Django project directory structure
      	data/	(For not-externally exposed wsgi code)
      	wsgi/	(Externally exposed wsgi goes)
      		application (Script to execute the application on wsgi)
-     		openshift/	(Django project directory)
+     		blas/	(Django project directory)
      			__init__.py
      			manage.py
      			openshiftlibs.py
@@ -160,7 +180,7 @@ On OpenShift, Django is served through wsgi, like cherrypy, this package can be 
                              'static3',  # If you want serve the static files in the same server
                              #  'mysql-connector-python',
                              #  'pymongo',
-                             #  'psycopg2',
+                             'psycopg2',
            ],
      )
 
