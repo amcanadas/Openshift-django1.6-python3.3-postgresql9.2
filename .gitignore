@@ -1,5 +1,4 @@
 *.py[co]
-*.py[c]
 *.sw[po]
 *.bak
 *.orig
