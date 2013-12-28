@@ -31,10 +31,10 @@ If PostgreSQL is used
 ---------------------
 
 On every push a 'python manage.py syncdb' is executed to make sure that any
-models you add is created in the DB. In preloaded data is needed, use of 
-fixtures is recomended (not in applied in this project).
+models you add is created in the DB. If preloaded data is needed, use of 
+fixtures is recomended (not applied in this project).
 If admin database is created for the first time, an admin user is created,
-otherwhise, admin passord is automatically changed for security reasons.
+otherwhise, admin password is automatically changed for security reasons.
 
 
 With this you can install Django 1.6 with Python 3.3 on OpenShift.
@@ -127,6 +127,7 @@ Django project directory structure
      			build
      			post_deploy
      			pre_build
+     			pre_start_python
      			deploy
      			secure_db.py
                 secure_pgdb.py
