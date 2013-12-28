@@ -127,7 +127,6 @@ Django project directory structure
      			build
      			post_deploy
      			pre_build
-                pre_strt_python  (script for [Openshift issue #986219](https://bugzilla.redhat.com/show_bug.cgi?id=986219))
      			deploy
      			secure_db.py
                 secure_pgdb.py
